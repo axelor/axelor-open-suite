@@ -1,0 +1,15 @@
+---
+title: "Invoicing: fixed sale orders invoiced twice from the order and from its deliveries, and receipts invoiced again after a refund."
+module: axelor-supplychain
+developer: |
+  - Added `checkInvoiceLineQuantities(Invoice)` to `SaleOrderInvoiceService`.
+  - Added `updateSaleOrderStockMoveInvoicing(SaleOrder)` to `StockMoveInvoiceService`.
+  - Added `UnitConversionService` and `InvoiceLineRepository` as constructor parameters of
+    `SaleOrderInvoiceServiceImpl`, `SaleOrderInvoiceContractServiceImpl` and `SaleOrderBudgetServiceImpl`.
+  - Added `SaleOrderInvoiceService` as a constructor parameter of `StockMoveMultiInvoiceServiceImpl`.
+  - Removed `allocateInvoiceLines` and `allocateUnlinkedInvoiceLines` from `StockMoveInvoiceServiceImpl`.
+  - Removed the action `action-app-supplychain-validate-invoice-generation`.
+
+  ```sql
+  DELETE FROM meta_action WHERE name = 'action-app-supplychain-validate-invoice-generation';
+  ```

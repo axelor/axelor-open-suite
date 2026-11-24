@@ -44,8 +44,10 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -54,6 +56,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.db.Timetable;
@@ -71,6 +74,7 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.db.Query;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -85,6 +89,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -122,6 +127,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
   protected PartnerAccountService partnerAccountService;
   protected InvoiceGlobalDiscountService invoiceGlobalDiscountService;
+  protected UnitConversionService unitConversionService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -143,7 +150,9 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
-      InvoiceGlobalDiscountService invoiceGlobalDiscountService) {
+      InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      UnitConversionService unitConversionService,
+      InvoiceLineRepository invoiceLineRepository) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -163,6 +172,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
     this.partnerAccountService = partnerAccountService;
     this.invoiceGlobalDiscountService = invoiceGlobalDiscountService;
+    this.unitConversionService = unitConversionService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -230,6 +241,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
       default:
         return null;
+    }
+    if (operationSelect == SaleOrderRepository.INVOICE_ALL
+        || operationSelect == SaleOrderRepository.INVOICE_LINES) {
+      checkInvoiceLineQuantities(invoice);
     }
     invoice.setSaleOrder(saleOrder);
 
@@ -1078,5 +1093,134 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       saleOrderLineList.add(saleOrderLineMap);
     }
     return saleOrderLineList;
+  }
+
+  @Override
+  public void checkInvoiceLineQuantities(Invoice invoice) throws AxelorException {
+    if (invoice == null
+        || invoice.getOperationTypeSelect() != InvoiceRepository.OPERATION_TYPE_CLIENT_SALE
+        || invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        || ObjectUtils.isEmpty(invoice.getInvoiceLineList())) {
+      return;
+    }
+
+    Map<SaleOrderLine, BigDecimal> qtyToInvoiceBySaleOrderLine = new LinkedHashMap<>();
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine == null
+          || saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL
+          || invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL
+          || isLinkedToReversion(invoiceLine)) {
+        continue;
+      }
+      qtyToInvoiceBySaleOrderLine.merge(
+          saleOrderLine,
+          convertQtyToSaleOrderLineUnit(invoiceLine, saleOrderLine),
+          BigDecimal::add);
+    }
+
+    for (Map.Entry<SaleOrderLine, BigDecimal> entry : qtyToInvoiceBySaleOrderLine.entrySet()) {
+      BigDecimal qtyToInvoice = entry.getValue();
+      if (qtyToInvoice.signum() <= 0) {
+        continue;
+      }
+      SaleOrderLine saleOrderLine = entry.getKey();
+      SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+      BigDecimal coveredQty = computeNonCanceledInvoiceQty(saleOrderLine, invoice.getId());
+      BigDecimal maxQtyToInvoice = getMaxQtyToInvoice(saleOrderLine);
+
+      if (coveredQty.compareTo(maxQtyToInvoice) >= 0) {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.SO_INVOICE_GENERATE_ALL_INVOICES));
+      }
+      if (coveredQty.add(qtyToInvoice).compareTo(maxQtyToInvoice) > 0) {
+        throw new AxelorException(
+            saleOrder,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(SupplychainExceptionMessage.SO_INVOICE_TOO_MUCH_INVOICED),
+            saleOrder.getSaleOrderSeq());
+      }
+    }
+  }
+
+  protected BigDecimal getMaxQtyToInvoice(SaleOrderLine saleOrderLine) {
+    return saleOrderLine.getQty().max(saleOrderLine.getDeliveredQty());
+  }
+
+  protected BigDecimal computeNonCanceledInvoiceQty(
+      SaleOrderLine saleOrderLine, Long currentInvoiceId) throws AxelorException {
+    String filter =
+        "self.saleOrderLine = :saleOrderLine"
+            + " AND self.typeSelect = :typeSelect"
+            + " AND self.invoice.statusSelect != :statusCanceled"
+            + " AND self.invoice.operationSubTypeSelect NOT IN (:excludedOperationSubTypeSelectList)"
+            + " AND self.invoice.operationTypeSelect IN (:operationTypeSelectList)";
+    if (currentInvoiceId != null) {
+      filter += " AND self.invoice.id != :currentInvoiceId";
+    }
+
+    Query<InvoiceLine> query =
+        invoiceLineRepository
+            .all()
+            .filter(filter)
+            .bind("saleOrderLine", saleOrderLine)
+            .bind("typeSelect", InvoiceLineRepository.TYPE_NORMAL)
+            .bind("statusCanceled", InvoiceRepository.STATUS_CANCELED)
+            .bind(
+                "excludedOperationSubTypeSelectList",
+                List.of(
+                    InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
+                    InvoiceRepository.OPERATION_SUB_TYPE_SUBSCRIPTION))
+            .bind(
+                "operationTypeSelectList",
+                List.of(
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+                    InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND));
+    if (currentInvoiceId != null) {
+      query.bind("currentInvoiceId", currentInvoiceId);
+    }
+
+    BigDecimal invoicedQty = BigDecimal.ZERO;
+    for (InvoiceLine invoiceLine : query.fetch()) {
+      if (isLinkedToReversion(invoiceLine)) {
+        continue;
+      }
+      BigDecimal qty = convertQtyToSaleOrderLineUnit(invoiceLine, saleOrderLine);
+      if (invoiceLine.getInvoice().getOperationTypeSelect()
+          == InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND) {
+        invoicedQty = invoicedQty.subtract(qty.abs());
+      } else {
+        invoicedQty = invoicedQty.add(qty);
+      }
+    }
+    return invoicedQty;
+  }
+
+  protected boolean isLinkedToReversion(InvoiceLine invoiceLine) {
+    StockMoveLine stockMoveLine = invoiceLine.getStockMoveLine();
+    return stockMoveLine != null
+        && stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getIsReversion();
+  }
+
+  protected BigDecimal convertQtyToSaleOrderLineUnit(
+      InvoiceLine invoiceLine, SaleOrderLine saleOrderLine) throws AxelorException {
+    BigDecimal qty = invoiceLine.getQty();
+    Unit invoiceLineUnit = invoiceLine.getUnit();
+    Unit saleOrderLineUnit = saleOrderLine.getUnit();
+    if (invoiceLineUnit != null
+        && saleOrderLineUnit != null
+        && !Objects.equals(invoiceLineUnit, saleOrderLineUnit)) {
+      qty =
+          unitConversionService.convert(
+              invoiceLineUnit,
+              saleOrderLineUnit,
+              qty,
+              appBaseService.getNbDecimalDigitForQty(),
+              saleOrderLine.getProduct());
+    }
+    return qty;
   }
 }

@@ -20,6 +20,7 @@ package com.axelor.apps.budget.service.saleorder;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
@@ -28,6 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -99,6 +101,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
       InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      UnitConversionService unitConversionService,
+      InvoiceLineRepository invoiceLineRepository,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -124,7 +128,9 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
         invoiceTaxService,
         saleOrderDeliveryAddressService,
         partnerAccountService,
-        invoiceGlobalDiscountService);
+        invoiceGlobalDiscountService,
+        unitConversionService,
+        invoiceLineRepository);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
