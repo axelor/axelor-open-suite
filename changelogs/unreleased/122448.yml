@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed the direct debit of payment schedules posting a second payment move for the same instalment when the accounting trigger of the payment mode is Immediate."
+module: axelor-bank-payment
