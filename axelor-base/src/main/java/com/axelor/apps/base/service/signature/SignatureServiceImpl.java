@@ -23,7 +23,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.PrivateKey;
-import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -58,7 +57,6 @@ public class SignatureServiceImpl implements SignatureService {
       throws AxelorException {
     try {
       BouncyCastleProvider bouncyCastleProvider = new BouncyCastleProvider();
-      Security.addProvider(bouncyCastleProvider);
       CMSSignedDataGenerator signedDataGen = new CMSSignedDataGenerator();
       X509Certificate cert = (X509Certificate) certificateChain[0];
 
