@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.saleorderline;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -80,5 +81,16 @@ public class SaleOrderLineSublineServiceImpl implements SaleOrderLineSublineServ
         }
       }
     }
+  }
+
+  @Override
+  public BigDecimal computeCumulativeQty(SaleOrderLine saleOrderLine) {
+    BigDecimal cumulativeQty = saleOrderLine.getQty();
+    for (SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+        parentSaleOrderLine != null;
+        parentSaleOrderLine = parentSaleOrderLine.getParentSaleOrderLine()) {
+      cumulativeQty = cumulativeQty.multiply(parentSaleOrderLine.getQty());
+    }
+    return cumulativeQty;
   }
 }

@@ -46,6 +46,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -80,6 +81,7 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
       InvoiceService invoiceService,
       AppSupplychainService appSupplychainService,
       InvoiceGlobalDiscountService invoiceGlobalDiscountService,
+      SaleOrderLineSublineService saleOrderLineSublineService,
       BudgetInvoiceService budgetInvoiceService,
       AppBudgetService appBudgetService,
       InvoiceToolBudgetService invoiceToolBudgetService,
@@ -103,7 +105,8 @@ public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceIm
         unitConversionService,
         invoiceService,
         appSupplychainService,
-        invoiceGlobalDiscountService);
+        invoiceGlobalDiscountService,
+        saleOrderLineSublineService);
     this.budgetInvoiceService = budgetInvoiceService;
     this.appBudgetService = appBudgetService;
     this.invoiceToolBudgetService = invoiceToolBudgetService;

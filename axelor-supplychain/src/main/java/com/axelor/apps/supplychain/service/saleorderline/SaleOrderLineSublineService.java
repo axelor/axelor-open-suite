@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.saleorderline;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -51,4 +52,6 @@ public interface SaleOrderLineSublineService {
    */
   void linkParentStockMoveLines(
       StockMove stockMove, Map<Long, StockMoveLine> saleOrderLineToStockMoveLine);
+
+  BigDecimal computeCumulativeQty(SaleOrderLine saleOrderLine);
 }
