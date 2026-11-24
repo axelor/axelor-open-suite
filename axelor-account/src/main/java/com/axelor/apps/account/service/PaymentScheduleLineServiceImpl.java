@@ -55,6 +55,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -240,6 +241,7 @@ public class PaymentScheduleLineServiceImpl implements PaymentScheduleLineServic
           paymentSchedule.getInvoiceSet().stream()
               .sorted(Comparator.comparing(Invoice::getDueDate))
               .map(invoice -> moveLineToolService.getDebitCustomerMoveLine(invoice))
+              .filter(Objects::nonNull)
               .collect(Collectors.toList());
 
       if (moveToolService.isSameAccount(debitMoveLineList, account)) {
