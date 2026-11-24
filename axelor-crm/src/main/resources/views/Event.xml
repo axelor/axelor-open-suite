@@ -437,6 +437,7 @@
     <context name="_calendar" expr="eval: calendar"/>
     <context name="_typeSelect" expr="eval: typeSelect"/>
     <context name="_relatedToSelectId" expr="eval: relatedToSelectId"/>
+    <context name="_sourceOpportunity" expr="eval: opportunity"/>
   </action-view>
 
   <form model="com.axelor.utils.db.Wizard" title="Apply modifications"
@@ -469,6 +470,7 @@
     <action name="action-event-record-event-from-sale-order" if="_saleOrder != null"/>
     <action name="action-event-method-add-guest"/>
     <action name="action-event-record-event-from-opportunity" if="_opportunity != null"/>
+    <action name="action-event-record-opportunity-link" if="_sourceOpportunity != null"/>
     <action name="action-event-record-set-partner"/>
   </action-group>
 
@@ -582,6 +584,12 @@
     <field name="typeSelect" expr="eval: EventRepository.TYPE_NOTE" if="_note"/>
   </action-record>
 
+  <action-record name="action-event-record-opportunity-link"
+    model="com.axelor.apps.crm.db.Event">
+    <field name="opportunity" expr="eval: _sourceOpportunity"/>
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.crm.db.Opportunity'"/>
+    <field name="relatedToSelectId" expr="eval: _sourceOpportunity.id"/>
+  </action-record>
 
   <action-record model="com.axelor.apps.crm.db.Event"
     name="action-event-record-event-from-sale-order">
