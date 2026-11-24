@@ -134,6 +134,8 @@ public class InvoiceVentilationSupplychainServiceImpl
     }
     if (InvoiceToolService.isPurchase(invoice)) {
       updatePurchaseOrderStockMoveInvoicing(invoice);
+    } else {
+      updateSaleOrderStockMoveInvoicing(invoice);
     }
   }
 
@@ -146,6 +148,26 @@ public class InvoiceVentilationSupplychainServiceImpl
     }
     for (PurchaseOrder purchaseOrder : purchaseOrderSet) {
       stockMoveInvoiceService.updatePurchaseOrderStockMoveInvoicing(purchaseOrder);
+    }
+  }
+
+  protected void updateSaleOrderStockMoveInvoicing(Invoice invoice) throws AxelorException {
+    Set<SaleOrder> saleOrderSet = new HashSet<>();
+    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine == null) {
+        continue;
+      }
+      SaleOrder saleOrder =
+          saleOrderLine.getSaleOrder() != null
+              ? saleOrderLine.getSaleOrder()
+              : saleOrderLine.getMainSaleOrder();
+      if (saleOrder != null) {
+        saleOrderSet.add(saleOrder);
+      }
+    }
+    for (SaleOrder saleOrder : saleOrderSet) {
+      stockMoveInvoiceService.updateSaleOrderStockMoveInvoicing(saleOrder);
     }
   }
 

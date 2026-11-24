@@ -48,6 +48,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -82,6 +83,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
   protected final SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain;
   protected final PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService;
   protected final PurchaseOrderInvoiceService purchaseOrderInvoiceService;
+  protected final SaleOrderInvoiceService saleOrderInvoiceService;
   protected final SupplyChainConfigService supplyChainConfigService;
   protected final StockMoveRepository stockMoveRepository;
   protected final AppSupplychainService appSupplychainService;
@@ -96,6 +98,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       SaleOrderMergingServiceSupplyChain saleOrderMergingServiceSupplyChain,
       PurchaseOrderMergingSupplychainService purchaseOrderMergingSupplychainService,
       PurchaseOrderInvoiceService purchaseOrderInvoiceService,
+      SaleOrderInvoiceService saleOrderInvoiceService,
       SupplyChainConfigService supplyChainConfigService,
       StockMoveRepository stockMoveRepository,
       AppSupplychainService appSupplychainService) {
@@ -107,6 +110,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     this.saleOrderMergingServiceSupplyChain = saleOrderMergingServiceSupplyChain;
     this.purchaseOrderMergingSupplychainService = purchaseOrderMergingSupplychainService;
     this.purchaseOrderInvoiceService = purchaseOrderInvoiceService;
+    this.saleOrderInvoiceService = saleOrderInvoiceService;
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveRepository = stockMoveRepository;
     this.appSupplychainService = appSupplychainService;
@@ -485,6 +489,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
 
     invoiceGenerator.populate(invoice, invoiceLineList);
 
+    saleOrderInvoiceService.checkInvoiceLineQuantities(invoice);
     invoiceRepository.save(invoice);
     invoice = toPositivePriceInvoice(invoice);
     if (invoice.getExTaxTotal().signum() == 0

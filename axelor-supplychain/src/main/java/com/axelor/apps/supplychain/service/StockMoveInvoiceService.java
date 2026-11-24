@@ -85,8 +85,8 @@ public interface StockMoveInvoiceService {
 
   /**
    * Computes the non-canceled invoiced quantity of a stock move line. For an incoming purchase
-   * order receipt, this includes its allocated ventilated {@link StockMoveLine#qtyInvoiced}
-   * quantity and directly linked invoices that are not yet ventilated.
+   * order receipt or an outgoing sale order delivery, this includes its allocated ventilated {@link
+   * StockMoveLine#qtyInvoiced} quantity and directly linked invoices that are not yet ventilated.
    *
    * @param stockMoveLine a stock move line
    * @return the invoiced quantity
@@ -104,6 +104,9 @@ public interface StockMoveInvoiceService {
   /** Recomputes invoiced quantities and statuses of receipt lines linked to the purchase order. */
   @Transactional(rollbackOn = {Exception.class})
   void updatePurchaseOrderStockMoveInvoicing(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  @Transactional(rollbackOn = {Exception.class})
+  void updateSaleOrderStockMoveInvoicing(SaleOrder saleOrder) throws AxelorException;
 
   /**
    * Checks if the given invoice is a refund of a stock move. Either the stock move is not a

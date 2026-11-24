@@ -204,7 +204,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     if (ObjectUtils.notEmpty(saleOrderSet)) {
       updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+      StockMoveInvoiceService stockMoveInvoiceService = Beans.get(StockMoveInvoiceService.class);
       for (SaleOrder saleOrder : saleOrderSet) {
+        if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && !stockMove.getIsReversion()) {
+          stockMoveInvoiceService.updateSaleOrderStockMoveInvoicing(saleOrder);
+        }
         // Update linked saleOrder delivery state depending on BackOrder's existence
         if (newStockSeq != null) {
           saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);

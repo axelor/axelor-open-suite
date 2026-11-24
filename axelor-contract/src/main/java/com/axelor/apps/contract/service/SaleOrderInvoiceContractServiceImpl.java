@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceGlobalDiscountService;
@@ -34,6 +35,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -51,6 +53,7 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineSublineService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -79,7 +82,10 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       PartnerAccountService partnerAccountService,
       InvoiceGlobalDiscountService invoiceGlobalDiscountService,
-      TimetableRepository timetableRepo) {
+      TimetableRepository timetableRepo,
+      UnitConversionService unitConversionService,
+      InvoiceLineRepository invoiceLineRepository,
+      SaleOrderLineSublineService saleOrderLineSublineService) {
     super(
         appBaseService,
         appStockService,
@@ -100,7 +106,10 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         saleOrderDeliveryAddressService,
         partnerAccountService,
         invoiceGlobalDiscountService,
-        timetableRepo);
+        timetableRepo,
+        unitConversionService,
+        invoiceLineRepository,
+        saleOrderLineSublineService);
   }
 
   @Transactional(rollbackOn = {Exception.class})
