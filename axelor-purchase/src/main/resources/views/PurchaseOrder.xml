@@ -659,7 +659,6 @@
   </action-group>
 
   <action-group name="action-group-purchase-order-cancel">
-    <action name="action-purchase-order-method-cancel-receipt" if="statusSelect==3"/>
     <action name="action-purchase-order-method-cancel"/>
   </action-group>
 
