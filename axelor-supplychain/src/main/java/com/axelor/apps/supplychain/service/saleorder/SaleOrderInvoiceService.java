@@ -313,4 +313,6 @@ public interface SaleOrderInvoiceService {
       throws AxelorException;
 
   List<Map<String, Object>> getSaleOrderLineList(SaleOrder saleOrder);
+
+  void checkInvoiceLineQuantities(Invoice invoice) throws AxelorException;
 }
