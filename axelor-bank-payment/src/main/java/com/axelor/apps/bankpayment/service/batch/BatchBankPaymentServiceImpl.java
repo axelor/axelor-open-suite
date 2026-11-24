@@ -209,7 +209,11 @@ public class BatchBankPaymentServiceImpl implements BatchBankPaymentService {
         continue;
       }
 
-      invoicePaymentValidateService.validate(invoicePayment, true);
+      BankOrder bankOrder = bankOrderCreateService.createBankOrder(invoicePayment);
+
+      if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
+        bankOrderValidationService.confirm(bankOrder);
+      }
 
       if (invoicePayment.getBankOrder() == null) {
         throw new AxelorException(
