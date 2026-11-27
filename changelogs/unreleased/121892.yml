@@ -1,3 +1,0 @@
----
-title: "Bank reconciliation: fixed automatic reconciliation saving a match that exceeds the move line amount and blocking the validation."
-module: axelor-bank-payment

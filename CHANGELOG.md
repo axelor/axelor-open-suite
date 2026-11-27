@@ -1,3 +1,255 @@
+## [9.2.2] (2026-11-27)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 8.2.7
+* PDF signature: fixed a memory leak after a hot redeployment of the application when PDF files were digitally signed.
+* Sale order/Purchase order: fixed the server error when selecting the tax number, and similar errors on project, product, invoice and other forms.
+* Product: fixed economic manufacturing order quantity shown for bought semi-finished products and hidden for produced ones.
+
+#### Account
+
+* Accounting batch: fixed the reimbursement export always reporting an anomaly and not generating the CFONB transfer file.
+* Loans: fixed 'Cancel deferral' not restoring the original schedule after a deferral with interest added to the remaining debt and recomputed installments.
+* Move: fixed generated tax lines ignoring the VAT system selected on the original line.
+* Payment schedule: fixed direct debit of the next schedule lines failing once one of the schedule invoices is fully paid.
+* Invoice: fixed the ventilation error message showing the first ventilated invoice date after the invoice date instead of the last one.
+* DAS2: fixed payments reconciled after their payment date being declared in the year of the reconciliation.
+* Reimbursement: an inactive default bank account is no longer used, the reimbursement is created with the 'To validate' status and without bank account.
+* Invoice term: fixed substitute PFP validators not being able to validate or refuse the invoice terms of the validator they replace, and not seeing them in 'My awaiting PFP'.
+* Accounting cut-off: fixed the origin of generated moves, which used the provisional number of the original move instead of its origin.
+* Move: fixed the cut off wizard dates remaining editable once the cut off move has been generated.
+* Payment session: fixed no term being retrieved when the recipient type is Employee.
+* Loan: an installment with a negative amount or a capital above the remaining debt can no longer be saved.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed automatic reconciliation saving a match that exceeds the move line amount and blocking the validation.
+* Payment session: fixed payment moves not generated at bank order realization when the bank order is confirmed automatically.
+* Bank reconciliation: fixed the reconciled amount counted twice on the cash move line of the move generated when validating a bank reconciliation.
+* Accounting batch: fixed the direct debit of payment schedules posting a second payment move for the same instalment when the accounting trigger of the payment mode is Immediate.
+* Bank details: fixed the camt.053 bank statement lines missing from the bank details tree and the bank details balance button.
+* Bank reconciliation: fixed 'Multiple reconciles' giving no confidence index colour, splitting an already split line on the full statement amount, and showing the statement remaining amount on every line instead of the line's own remaining amount.
+* Bank reconciliation: fixed the analytic distribution template of the bank reconciliation line being ignored when validating the reconciliation.
+* Bank reconciliation: fixed the date of the unreconciled move lines in the printing.
+
+#### Budget
+
+* Budget: fixed the budget checks not being run when ventilating an invoice if another module overrides the ventilate buttons.
+* Budget: fixed the simulated amount of the budget and of the global budget staying at 0 when an account move with a budget imputation is simulated.
+* Invoice: hide the budget distribution table in mono budget
+* Global budget: fixed the amount of each line replaced by the expected amount when updating the dates, and recomputed the expected amount after the periods are regenerated.
+
+#### CRM
+
+* Opportunity: fixed events being duplicated when duplicating an opportunity.
+* Event: the 'Create event' action from the Tools menu now keeps the opportunity of the source event.
+
+#### Fleet
+
+* Vehicle: fixed the empty name of vehicles created by import or through the API.
+* Fleet : fixed inconsistent demo data (vehicle acquisition dates, contracts linked to a vehicle with costs, employee drivers, fuel logs in the past).
+
+#### Helpdesk
+
+* Ticket: the status API used by the mobile application no longer starts, stops or cancels a timer when 'Manage Timer' is disabled.
+* Helpdesk: the help of the SLA option no longer mentions alerts that do not exist, and the French labels of the SLA policy form ('Apply on', 'Reach stage') and of the 'SLA completed' indicator have been corrected.
+* Ticket: fixed the start date not being saved when starting a ticket, and the end date not being set when closing a ticket from the screen or the mobile app.
+* Helpdesk: fixed the 'Current tickets' menu listing resolved and closed tickets, the 'Resolved' bars of the ticket charts ignoring closed tickets, the SLA charts computing their percentages on all the tickets of the database instead of those of the SLA and staying empty for an SLA without team, and the 'User' field of the SLA charts per user proposing no user.
+* Ticket: fixed the SLA policy selection: the minimum priority now includes higher priorities, the stage to reach is required and the most specific policy is applied.
+* Helpdesk: fixed email fetching failing on emails that are not replies to an email sent from the application.
+
+#### Human Resource
+
+* Project: fixed the help of the option that excludes a project from the timesheet editor, which described the opposite behaviour.
+
+#### Maintenance
+
+* Maintenance order: fixed maintenance order hours being added to the machine operating duration.
+* Equipment maintenance: fixed the cycle-based maintenance period being editable although the preventive maintenance batch does not use it.
+* Preventive maintenance: the next maintenance date and the operating hours reference of the equipment are now updated when the request is completed, not when the batch creates it.
+
+#### Purchase
+
+* Purchase order line: fixed the A.T.I. unit price doubled when a non-deductible tax is set with the VAT, also on the generated invoices, receptions and invoice lines.
+
+#### Stock
+
+* Stock move, purchase request, timesheet: the status can no longer be changed through the generic REST API, only through the record actions. A realized stock move can no longer be realized a second time.
+* Stock location: fixed the empty total sale value in the location financial data printing.
+* Freight carrier mode: the French label is now 'Prestation de transport' instead of 'Mode de transporteur'.
+* Stock move: the API internal move creation now checks the read access on the stock locations and the write access on the created move before realizing it, and fills the trading name from the source stock location.
+
+#### Supplier Management
+
+* Supplier request: fixed the unit price of supplier offers being rounded to 2 decimals instead of using the number of decimal digits configured for unit prices, and the accepted offer price not being used on the generated supplier purchase orders.
+
+#### Supply Chain
+
+* Purchase order: cancelling a purchase order is now blocked, without cancelling any receipt, when one of its receipts cannot be cancelled.
+* Sale order: fixed the invoiced amount counting the pack total when the end of pack line shows the total.
+* Accounting cut-off: fixed the empty not invoiced amount and the missing cut-off entry for deliveries and receipts without order.
+* Mass customer stock move invoicing: fixed the deliveries offered when the validation step for invoicing is enabled.
+* Invoicing: fixed sale orders invoiced twice from the order and from its deliveries, and receipts invoiced again after a refund.
+
+
+### Developer
+
+#### Bank Payment
+
+`BankReconciliationValidateService` no longer sets `bankReconciledAmount` on the cash move line
+when it generates the move of a bank reconciliation line: `BankReconciliationLineService.updateBankReconciledAmounts`,
+which is cumulative, adds it once.
+
+Moves generated before this fix keep a reconciled amount equal to twice their amount. To repair them,
+run this query on the database (it only touches move lines whose reconciled amount is exactly
+twice the amount of the posted bank reconciliation lines pointing to them):
+
+```
+UPDATE account_move_line ml
+SET bank_reconciled_amount = brl.total
+FROM (
+  SELECT move_line, SUM(debit + credit) AS total
+  FROM bankpayment_bank_reconciliation_line
+  WHERE move_line IS NOT NULL AND is_posted = TRUE
+  GROUP BY move_line
+) brl
+WHERE ml.id = brl.move_line
+  AND ml.bank_reconciled_amount = 2 * brl.total;
+```
+
+---
+
+- `action-bank-details-view-show-bank-statement-lines` and
+  `action-bank-details-view-show-bank-statement-lines-final-balance` now open
+  `BankStatementLine` with the new grid `bank-statement-line-bank-details-grid` and the form
+  `bank-statement-line-form` instead of `bank-statement-line-afb-120-grid` and
+  `bank-statement-line-afb-120-form`.
+- The search filters `bank-statement-line-afb-120-filters` now target `BankStatementLine`.
+
+---
+
+Added `MoveLineComputeAnalyticService` and `AnalyticLineService` as constructor parameters of
+`BankReconciliationValidateService`.
+
+#### Budget
+
+```sql
+DELETE FROM meta_action WHERE name IN ('action-budget-invoice-group-ventilate-button', 'action-budget-invoice-group-validate-and-ventilate-button');
+```
+
+---
+
+`BudgetToolsServiceImpl#computeBudgetAmountMap` (used by `BudgetComputeServiceImpl#computeBudgetFieldsWithLines`
+on every budget save, and by the budget form) now keeps the current `simulatedAmount` of the budget instead of
+resetting it to zero, and computes `availableAmountWithSimulated` from it. The simulated amount is not derived from the
+budget lines, it is set by `BudgetService#computeTotalSimulatedAmount` from the simulated moves.
+
+Existing databases: the simulated amount of a budget that currently has simulated moves is corrected the next time one of
+its moves is simulated, accounted in daybook or deleted. No migration script is provided.
+
+#### Helpdesk
+
+The constructor of `TicketUpdateRestServiceImpl` has a new injected parameter: `AppHelpdeskService`.
+
+Implementations extending this class must accept and forward the new constructor parameter.
+
+---
+
+The action groups `action-ticket-group-on-start` and `action-ticket-group-on-close` have been changed and now call
+the new action groups `action-ticket-group-fill-start-date` and `action-ticket-group-fill-end-date`.
+Modules overriding `action-ticket-group-on-start` or `action-ticket-group-on-close` must apply this change too.
+
+`TicketUpdateRestServiceImpl` has a new protected method `fillEndDate(Ticket, LocalDateTime)`, used by
+`handleStop` and `handleClose`.
+
+---
+
+Added getResolvedAndClosedStatusIds() to TicketStatusService. Custom classes implementing this
+interface without extending TicketStatusServiceImpl must implement it.
+
+The action helpdesk.ticket.current of the 'Current tickets' menu is now an action-method calling
+TicketController.showCurrentTickets(), which excludes the resolved and closed statuses of the
+helpdesk configuration. The SQL datasets of the ticket and SLA charts of the helpdesk dashboards
+and the domain of the user search field of the SLA charts per user have changed. Views overriding
+them by name in custom modules keep their previous behaviour. The SLA charts per team now count
+all the tickets of the selected SLA and no longer filter on the active team of the assignee.
+
+---
+
+TicketServiceImpl.computeSLA: an SLA policy now matches a ticket when its minimum priority is
+empty or lower than or equal to the priority of the ticket (it was compared by equality). Among the
+matching policies whose stage to reach is not reached yet, the applied one is the most specific: a
+policy with a team before a policy for any team, then a policy with a ticket type before a policy
+for any type, then the highest minimum priority (empty counts as the lowest), then the closest
+stage to reach, then the smallest id. New protected methods getMatchingSlaList(Ticket),
+getSlaTeam(Ticket) and getSlaComparator().
+
+The stage to reach is now required in the SLA policy form (sla-form); the domain is unchanged. SLA
+policies without a stage to reach have not been applied since 8.0.0 and are still not applied: fill
+their stage to reach to apply them. To list them:
+
+```sql
+SELECT id, name FROM helpdesk_sla WHERE reach_stage_ticket_status IS NULL;
+```
+
+The SLA policy and the deadline of the existing tickets are recomputed at their next save only.
+
+#### Purchase
+
+- Added `TaxRateService` as a constructor parameter of `ProductPriceServiceImpl`.
+- Changed the `TaxService` constructor parameter of `PurchaseOrderStockServiceImpl` to `TaxAccountService`.
+- Changed the `TaxService` constructor parameter of `InvoiceLineOrderServiceImpl` to `TaxAccountService`.
+
+#### Stock
+
+The new `WorkflowStatusGuardService.checkStatusUnchanged(repository, json)` (axelor-base) refuses a
+generic save (`/ws/rest`, web client) that changes the `statusSelect` of an existing record sent
+with its current version. It is called from the `validate()` method of
+`StockMoveManagementRepository`, `PurchaseRequestManagementRepository` and `TimesheetHRRepository`:
+overrides of `validate()` in subclasses must call `super.validate(json, context)`. Record creation,
+records nested in the save of another record and mass updates are not checked.
+
+Custom code or integrations that changed `statusSelect` of stock moves, purchase requests or
+timesheets through `/ws/rest` must use the record actions or the dedicated `/ws/aos` API instead.
+
+---
+
+`StockMoveService.createStockMoveMobility(StockLocation, StockLocation, Company, List)` no longer realizes
+the stock move: it returns the planned move. The realization is done by
+`StockMoveRestController.createInternalStockMove` after checking the write access on the created move.
+
+Implementations calling this method and expecting a realized move must call
+`StockMoveService.realize(StockMove)` themselves.
+
+#### Supplier Management
+
+-- Script
+ALTER TABLE suppliermanagement_purchase_order_supplier_line ALTER COLUMN price TYPE numeric(20,10);
+
+#### Supply Chain
+
+Added `AppSupplychainService` as a constructor parameter of `StockMoveMultiInvoiceServiceImpl`.
+
+---
+
+- Added `checkInvoiceLineQuantities(Invoice)` to `SaleOrderInvoiceService`.
+- Added `updateSaleOrderStockMoveInvoicing(SaleOrder)` to `StockMoveInvoiceService`.
+- Added `computeCumulativeQty(SaleOrderLine)` to `SaleOrderLineSublineService`.
+- Added `UnitConversionService`, `InvoiceLineRepository` and `SaleOrderLineSublineService` as constructor
+  parameters of `SaleOrderInvoiceServiceImpl`, `SaleOrderInvoiceContractServiceImpl` and
+  `SaleOrderBudgetServiceImpl`.
+- Added `SaleOrderLineSublineService` as a constructor parameter of `StockMoveInvoiceServiceImpl` and
+  `StockMoveInvoiceBudgetServiceImpl`.
+- Added `SaleOrderInvoiceService` as a constructor parameter of `StockMoveMultiInvoiceServiceImpl`.
+- Removed `allocateInvoiceLines` and `allocateUnlinkedInvoiceLines` from `StockMoveInvoiceServiceImpl`.
+- Removed the action `action-app-supplychain-validate-invoice-generation`.
+
+```sql
+DELETE FROM meta_action WHERE name = 'action-app-supplychain-validate-invoice-generation';
+```
+
 ## [9.2.1] (2026-11-13)
 
 ### Fixes
@@ -1932,5 +2184,6 @@ The `KNOWN DEBT - axelor-budget` section disappears from
 
 - `ProjectTaskProgressUpdateServiceImpl`: new constructor with `ProjectTaskRepository`; protected `updateChildrenProgress(ProjectTask, BigDecimal, int)` and `updateParentsProgress(ProjectTask, int)` take an extra `Map<Long, List<ProjectTask>>` parameter.
 
+[9.2.2]: https://github.com/axelor/axelor-open-suite/compare/v9.2.1...v9.2.2
 [9.2.1]: https://github.com/axelor/axelor-open-suite/compare/v9.2.0...v9.2.1
 [9.2.0]: https://github.com/axelor/axelor-open-suite/compare/v9.1.10...v9.2.0

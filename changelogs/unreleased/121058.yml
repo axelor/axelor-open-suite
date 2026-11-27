@@ -1,3 +1,0 @@
----
-title: "Loans: fixed 'Cancel deferral' not restoring the original schedule after a deferral with interest added to the remaining debt and recomputed installments."
-module: axelor-account
