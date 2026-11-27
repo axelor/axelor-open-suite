@@ -1,3 +1,30 @@
+## [8.4.40] (2026-11-27)
+
+### Fixes
+#### Base
+
+* Upgrade to AOP 7.4.15
+
+#### Account
+
+* Invoice: fixed delivery address displaying the billing address on read-only invoices.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed the analytic distribution template of the bank reconciliation line being ignored when validating the reconciliation.
+
+#### Stock
+
+* Stock move: fixed total without tax not updated.
+
+
+### Developer
+
+#### Bank Payment
+
+Added `MoveLineComputeAnalyticService` and `AnalyticLineService` as constructor parameters of
+`BankReconciliationValidateService`.
+
 ## [8.4.39] (2026-11-13)
 
 ### Fixes
@@ -3670,6 +3697,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.40]: https://github.com/axelor/axelor-open-suite/compare/v8.4.39...v8.4.40
 [8.4.39]: https://github.com/axelor/axelor-open-suite/compare/v8.4.38...v8.4.39
 [8.4.38]: https://github.com/axelor/axelor-open-suite/compare/v8.4.37...v8.4.38
 [8.4.37]: https://github.com/axelor/axelor-open-suite/compare/v8.4.36...v8.4.37
