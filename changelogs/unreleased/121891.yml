@@ -1,3 +1,0 @@
----
-title: "PDF signature: fixed a memory leak after a hot redeployment of the application when PDF files were digitally signed."
-module: axelor-base

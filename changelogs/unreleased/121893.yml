@@ -1,7 +1,0 @@
----
-title: "Purchase order line: fixed the A.T.I. unit price doubled when a non-deductible tax is set with the VAT, also on the generated invoices, receptions and invoice lines."
-module: axelor-purchase
-developer: |
-  - Added `TaxRateService` as a constructor parameter of `ProductPriceServiceImpl`.
-  - Changed the `TaxService` constructor parameter of `PurchaseOrderStockServiceImpl` to `TaxAccountService`.
-  - Changed the `TaxService` constructor parameter of `InvoiceLineOrderServiceImpl` to `TaxAccountService`.
