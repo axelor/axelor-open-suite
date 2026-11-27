@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed the ventilation error message showing the first ventilated invoice date after the invoice date instead of the last one."
-module: axelor-account

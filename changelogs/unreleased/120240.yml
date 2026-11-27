@@ -1,3 +1,0 @@
----
-title: "Equipment maintenance: fixed the cycle-based maintenance period being editable although the preventive maintenance batch does not use it."
-module: axelor-maintenance

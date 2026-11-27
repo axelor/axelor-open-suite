@@ -1,6 +1,0 @@
----
-title: "Supplier request: fixed the unit price of supplier offers being rounded to 2 decimals instead of using the number of decimal digits configured for unit prices, and the accepted offer price not being used on the generated supplier purchase orders."
-module: axelor-supplier-management
-developer: |
-  -- Script
-  ALTER TABLE suppliermanagement_purchase_order_supplier_line ALTER COLUMN price TYPE numeric(20,10);
