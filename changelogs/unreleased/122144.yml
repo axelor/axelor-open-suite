@@ -1,7 +1,0 @@
----
-title: "Budget: fixed the budget checks not being run when ventilating an invoice if another module overrides the ventilate buttons."
-module: axelor-budget
-developer: |
-  ```sql
-  DELETE FROM meta_action WHERE name IN ('action-budget-invoice-group-ventilate-button', 'action-budget-invoice-group-validate-and-ventilate-button');
-  ```
